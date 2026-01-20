@@ -11,7 +11,7 @@ EntidadePessoa
 - Status - eNum('Ativo', 'Inativo') NOT NULL
 - Observações - VARCHAR(200)
 
-EndidadeBem
+EntidadeBem
 - EntidadeBemID (PK) - INT AUTO_INCREMENT
 - EntidadeID (FK) - SMALLINT NOT NULL (Proprietário do bem)
 - DescricaoBem - VARCHAR(200) NOT NULL
@@ -67,16 +67,27 @@ ProdutoPlano
 - ProdutoPlanoID (PK) - INT AUTO_INCREMENT
 - ProdutoID (FK) - SMALLINT NOT NULL
 - NomePlano - VARCHAR(100) NOT NULL
-- Cobertura - VARCHAR(200) NOT NULL
 - DataInicioVigencia - DATE NOT NULL
 - DataFimVigencia - DATE
 - Observações - VARCHAR(200)
+
+CoberturaPlano
+- CoberturaPlanoID (PK) - INT AUTO_INCREMENT
+- ProdutoPlanoID (FK) - INT NOT NULL
+- DescricaoCobertura - VARCHAR(200) NOT NULL
+- LimiteCobertura - DECIMAL(10,2) NOT NULL
+- Franquia - DECIMAL(10,2) NOT NULL
+- Observações - VARCHAR(200)
+
+CoberturaProdutoPlano
+- CoberturaProdutoPlanoID (PK) - INT AUTO_INCREMENT
+- ProdutoPlanoID (FK) - INT NOT NULL
+- CoberturaPlanoID (FK) - INT NOT NULL
 
 Apólice
 - ApoliceID (PK) - INT AUTO_INCREMENT
 - ProdutoPlanoID (FK) - INT NOT NULL
 - MediadorID (FK) - SMALLINT NOT NULL
-- EntidadeBemID (FK) - INT (Se aplicável)
 - DataEmissao - DATE NOT NULL
 - DataInicioVigencia - DATE NOT NULL
 - DataFimVigencia - DATE NOT NULL
@@ -102,7 +113,7 @@ HistóricoApolice
 
 Premio
 - PremioID (PK) - INT AUTO_INCREMENT
-- ApoliceID (FK) - INT NOT NULL
+- ApoliceID (FK) - INT NOT NULL UNI
 - ValorContratado - DECIMAL(10,2) NOT NULL
 - Periodicidade - eNum('Mensal', 'Trimestral', 'Semestral', 'Anual') NOT NULL
 - DataVencimento - DATE NOT NULL
