@@ -1,5 +1,5 @@
 USE [GestaoDeSeguros]
-GO
+GO 
 
 -- Inserir entidades de pessoas
 INSERT INTO EntidadePessoa (Nome, NIF, TipoEntidade, DataNascimento, Morada, Localidade, Telefone, Email, Status)
