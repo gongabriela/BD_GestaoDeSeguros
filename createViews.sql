@@ -119,7 +119,7 @@ FROM Seguradora s
 	LEFT JOIN Premio pm ON a.ApoliceID = pm.ApoliceID
 	LEFT JOIN Pagamento p ON pm.PremioID = p.PremioID
 GROUP BY s.Nome
-HAVING ISNULL(SUM(p.ValorPago), 0) >= 0;
+HAVING ISNULL(SUM(p.ValorPago), 0) >= 1000;
 GO
 
 -- CONTRATOS E EXISTENCIA DE SINISTROS
@@ -138,11 +138,23 @@ AS
     ORDER BY NumeroDeSinistros DESC;
 GO
 
--- RELATORIO DO ALUNO: taxa de abandono e fidelizacao
+-- RELATORIO DO ALUNO: Relatorio Mensal de Atividade de Apolices
+GO
+CREATE VIEW vw_RelatorioMensalApolice
+AS
+    SELECT
+        FORMAT(DataAlteracao, 'yyyy-MM') AS Mes,
+        SUM(CASE WHEN EstadoNovo = 'Ativo' THEN 1 ELSE 0 END) AS NovasAtivacoes,
+        SUM(CASE WHEN EstadoNovo = 'Cancelado' THEN 1 ELSE 0 END) AS Cancelamentos,
+        SUM(CASE WHEN EstadoNovo NOT IN ('Ativo', 'Cancelado') THEN 1 ELSE 0 END) AS OutrasAlteracoes
+    FROM
+        HistoricoApolice
+    WHERE
+        DataAlteracao >= DATEADD(year, -1, GETDATE())
+    GROUP BY
+        FORMAT(DataAlteracao, 'yyyy-MM')
+GO
 
-
-
-
-
+-- RELATORIO DO ALUNO: Sinistros pendentes
 
 

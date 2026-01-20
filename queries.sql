@@ -1,6 +1,9 @@
+USE [GestaoDeSeguros]
+GO 
+
 -- CONTRATOS POR TIPO DE SEGURO
     SELECT * FROM vw_ContratosPorTipoDeSeguro
-    ORDER BY Contratos desc
+    ORDER BY Contratos DESC;
 
 -- SEGURADORAS E NUMERO DE CONTRATOS ATIVOS
     SELECT * FROM vw_SeguradorasENumeroDeContratosAtivos
@@ -23,3 +26,8 @@
 -- CONTRATOS E EXISTENCIA DE SINISTROS
     SELECT * FROM vw_ContratosEExistenciaDeSinistros
     ORDER BY NumeroDeSinistros DESC;
+
+
+-- RELATORIO DO ALUNO
+    SELECT * FROM vw_RelatorioMensalApolice
+    ORDER BY Mes DESC;

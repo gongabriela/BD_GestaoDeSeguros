@@ -32,6 +32,14 @@ DROP TABLE IF EXISTS [Mediador];
 DROP TABLE IF EXISTS [Seguradora];
 DROP TABLE IF EXISTS [EntidadeBem];
 DROP TABLE IF EXISTS [EntidadePessoa];
+DROP VIEW IF EXISTS vw_RelatorioValorTotalPremiosPorSeguradora;
+DROP VIEW IF EXISTS vw_ContratosEExistenciaDeSinistros;
+DROP VIEW IF EXISTS vw_RelatorioMensalApolice;
+DROP VIEW IF EXISTS vw_ContratosPorTipoDeSeguro;
+DROP VIEW IF EXISTS vw_SeguradorasENumeroDeContratosAtivos;
+DROP VIEW IF EXISTS vw_ValorMedioDoPremioPorTipoDeSeguro;
+DROP VIEW IF EXISTS vw_ClientesENumeroDeContratosCelebrados;
+DROP VIEW IF EXISTS vw_RelatorioPagamentosPorContrato;
 GO
 
 -- Remoção de regras e tipos de dados personalizados existentes
@@ -372,7 +380,6 @@ CREATE TABLE Sinistro (
     Descricao VARCHAR(200) NOT NULL,
     ValorReclamado Dom_Moeda,
     ValorIndenizacaoTotal Dom_Moeda DEFAULT 0,
-    Status VARCHAR(15) NOT NULL CHECK (Status IN ('Aberto', 'Em Análise', 'Fechado', 'Indenizado')),
     Observacoes VARCHAR(200)
 );
 
