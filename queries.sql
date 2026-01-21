@@ -27,5 +27,6 @@ GO
     SELECT * FROM vw_ContratosEExistenciaDeSinistros
     ORDER BY NumeroDeSinistros DESC;
 
--- HISTORICO DE APOLICE 
-    SELECT * FROM vw_HistoricoApolice;
+-- HISTORICO DE APOLICE GENERICO 
+    SELECT * FROM vw_HistoricoApolice
+    ORDER BY DataAlteracao DESC;
