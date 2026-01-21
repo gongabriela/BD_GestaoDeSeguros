@@ -44,7 +44,7 @@ GO
 GO
 CREATE VIEW vw_ValorMedioDoPremioPorTipoDeSeguro
 AS
-    SELECT ts.Descricao AS TipoDeSeguro, AVG(pr.ValorContratado) AS ValorMedioPremio
+    SELECT ts.Descricao AS TipoDeSeguro, CAST(AVG(pr.ValorContratado) AS DECIMAL(10,2)) AS ValorMedioPremio
     FROM TipoDeSeguro ts
         INNER JOIN Produto p ON ts.TipoSeguroID = p.TipoSeguroID
         INNER JOIN ProdutoPlano pp ON p.ProdutoID = pp.ProdutoID
@@ -138,23 +138,24 @@ AS
     ORDER BY NumeroDeSinistros DESC;
 GO
 
--- RELATORIO DO ALUNO: Relatorio Mensal de Atividade de Apolices
+-- RELATORIO DO ALUNO: Visão genérica do historico das apólices
 GO
-CREATE VIEW vw_RelatorioMensalApolice
+CREATE VIEW vw_HistoricoApolice 
 AS
-    SELECT
-        FORMAT(DataAlteracao, 'yyyy-MM') AS Mes,
-        SUM(CASE WHEN EstadoNovo = 'Ativo' THEN 1 ELSE 0 END) AS NovasAtivacoes,
-        SUM(CASE WHEN EstadoNovo = 'Cancelado' THEN 1 ELSE 0 END) AS Cancelamentos,
-        SUM(CASE WHEN EstadoNovo NOT IN ('Ativo', 'Cancelado') THEN 1 ELSE 0 END) AS OutrasAlteracoes
-    FROM
-        HistoricoApolice
-    WHERE
-        DataAlteracao >= DATEADD(year, -1, GETDATE())
-    GROUP BY
-        FORMAT(DataAlteracao, 'yyyy-MM')
+    SELECT 
+        a.ApoliceID,
+        s.Nome AS Seguradora,
+        ts.Descricao AS TipoDeSeguro,
+        pp.NomePlano,
+        CAST(ha.DataAlteracao AS DATE) AS DataAlteracao,
+        ha.EstadoAnterior,
+        ha.EstadoNovo,
+        ha.DescricaoAlteracao
+    FROM HistoricoApolice ha
+    INNER JOIN Apolice a ON ha.ApoliceID = a.ApoliceID
+    INNER JOIN ProdutoPlano pp ON a.ProdutoPlanoID = pp.ProdutoPlanoID
+    INNER JOIN Produto p ON pp.ProdutoID = p.ProdutoID
+    INNER JOIN Seguradora s ON p.SeguradoraID = s.SeguradoraID
+    INNER JOIN TipoDeSeguro ts ON p.TipoSeguroID = ts.TipoSeguroID;
 GO
-
--- RELATORIO DO ALUNO: Sinistros pendentes
-
 

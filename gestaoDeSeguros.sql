@@ -34,12 +34,12 @@ DROP TABLE IF EXISTS [EntidadeBem];
 DROP TABLE IF EXISTS [EntidadePessoa];
 DROP VIEW IF EXISTS vw_RelatorioValorTotalPremiosPorSeguradora;
 DROP VIEW IF EXISTS vw_ContratosEExistenciaDeSinistros;
-DROP VIEW IF EXISTS vw_RelatorioMensalApolice;
 DROP VIEW IF EXISTS vw_ContratosPorTipoDeSeguro;
 DROP VIEW IF EXISTS vw_SeguradorasENumeroDeContratosAtivos;
 DROP VIEW IF EXISTS vw_ValorMedioDoPremioPorTipoDeSeguro;
 DROP VIEW IF EXISTS vw_ClientesENumeroDeContratosCelebrados;
 DROP VIEW IF EXISTS vw_RelatorioPagamentosPorContrato;
+DROP VIEW IF EXISTS vw_HistoricoApolice;
 GO
 
 -- Remoção de regras e tipos de dados personalizados existentes

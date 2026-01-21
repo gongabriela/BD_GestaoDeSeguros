@@ -27,7 +27,5 @@ GO
     SELECT * FROM vw_ContratosEExistenciaDeSinistros
     ORDER BY NumeroDeSinistros DESC;
 
-
--- RELATORIO DO ALUNO
-    SELECT * FROM vw_RelatorioMensalApolice
-    ORDER BY Mes DESC;
+-- HISTORICO DE APOLICE 
+    SELECT * FROM vw_HistoricoApolice;

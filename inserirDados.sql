@@ -122,3 +122,4 @@ VALUES
 (1, '2025-05-28', 'Em Análise', 'Fechado', 450.00, 'Indemnização paga'),
 (3, '2025-08-20', 'Aberto', 'Em Análise', 0.00, 'Aguardar orçamentos');
 GO
+
