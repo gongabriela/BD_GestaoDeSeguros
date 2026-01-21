@@ -1,5 +1,5 @@
 USE [GestaoDeSeguros]
-GO 
+GO
 
 -- CONTRATOS POR TIPO DE SEGURO
 -- listar todos os tipos de seguro existentes;
@@ -10,7 +10,7 @@ GO
 GO
 CREATE VIEW vw_ContratosPorTipoDeSeguro
 AS
-    SELECT t.Descricao AS TipoDeSeguro, COUNT(a.ApoliceID) AS Contratos 
+    SELECT t.Descricao AS TipoDeSeguro, COUNT(a.ApoliceID) AS Contratos
     FROM TipoDeSeguro t
         LEFT JOIN Produto p ON p.TipoSeguroID = t.TipoSeguroID
         LEFT JOIN ProdutoPlano pp ON pp.ProdutoID = p.ProdutoID
@@ -50,7 +50,7 @@ AS
         INNER JOIN ProdutoPlano pp ON p.ProdutoID = pp.ProdutoID
         INNER JOIN Apolice a ON pp.ProdutoPlanoID = a.ProdutoPlanoID
         INNER JOIN Premio pr ON a.ApoliceID = pr.ApoliceID
-    WHERE GETDATE() BETWEEN a.DataInicioVigencia AND a.DataFimVigencia 
+    WHERE GETDATE() BETWEEN a.DataInicioVigencia AND a.DataFimVigencia
     GROUP BY ts.TipoSeguroID, ts.Descricao
 GO
 
@@ -140,16 +140,15 @@ GO
 
 -- RELATORIO DO ALUNO: Visão genérica do historico das apólices
 GO
-CREATE VIEW vw_HistoricoApolice 
+CREATE VIEW vw_HistoricoApolice
 AS
-    SELECT 
+    SELECT
         a.ApoliceID,
         s.Nome AS Seguradora,
         ts.Descricao AS TipoDeSeguro,
         pp.NomePlano,
         CAST(ha.DataAlteracao AS DATE) AS DataAlteracao,
-        ha.EstadoAnterior,
-        ha.EstadoNovo,
+        ha.Estado,
         ha.DescricaoAlteracao
     FROM HistoricoApolice ha
     INNER JOIN Apolice a ON ha.ApoliceID = a.ApoliceID

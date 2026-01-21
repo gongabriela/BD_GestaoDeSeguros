@@ -313,16 +313,14 @@ HistóricoApolice
 - HistoricoApoliceID (PK) - INT AUTO_INCREMENT
 - ApoliceID (FK) - INT NOT NULL
 - DataAlteracao - DATETIME NOT NULL
-- EstadoAnterior - eNum('Ativa', 'Suspensa', 'Cancelada', 'Expirada') NOT NULL
-- EstadoNovo - eNum('Ativa', 'Suspensa', 'Cancelada', 'Expirada') NOT NULL
+- Estado - eNum('Ativa', 'Suspensa', 'Cancelada', 'Expirada') NOT NULL
 - DescricaoAlteracao - VARCHAR(200) NOT NULL
 */
 CREATE TABLE HistoricoApolice (
     HistoricoApoliceID INT PRIMARY KEY IDENTITY(1,1),
     ApoliceID INT NOT NULL REFERENCES Apolice(ApoliceID),
     DataAlteracao DATETIME NOT NULL DEFAULT GETDATE(),
-    EstadoAnterior VARCHAR(15) NOT NULL CHECK (EstadoAnterior IN ('Ativa', 'Suspensa', 'Cancelada', 'Expirada')),
-    EstadoNovo VARCHAR(15) NOT NULL CHECK (EstadoNovo IN ('Ativa', 'Suspensa', 'Cancelada', 'Expirada')),
+    Estado VARCHAR(15) NOT NULL CHECK (Estado IN ('Ativa', 'Suspensa', 'Cancelada', 'Expirada')),
     DescricaoAlteracao VARCHAR(200) NOT NULL
 );
 
@@ -388,8 +386,7 @@ HistoricoSinistro
 - HistoricoSinistroID (PK) - INT AUTO_INCREMENT
 - SinistroID (FK) - INT NOT NULL
 - DataAlteracao - DATETIME NOT NULL
-- EstadoAnterior - eNum('Aberto', 'Em Análise', 'Fechado') NOT NULL
-- EstadoNovo - eNum('Aberto', 'Em Análise', 'Fechado') NOT NULL
+- Estado - eNum('Aberto', 'Em Análise', 'Fechado') NOT NULL
 - ValorIndemnizadoNestaFase - DECIMAL(10,2)
 - DescricaoAlteracao - VARCHAR(200) NOT NULL
 */
@@ -397,8 +394,7 @@ CREATE TABLE HistoricoSinistro (
     HistoricoSinistroID INT PRIMARY KEY IDENTITY(1,1),
     SinistroID INT NOT NULL REFERENCES Sinistro(SinistroID),
     DataAlteracao DATETIME NOT NULL DEFAULT GETDATE(),
-    EstadoAnterior VARCHAR(15) NOT NULL CHECK (EstadoAnterior IN ('Aberto', 'Em Análise', 'Fechado')),
-    EstadoNovo VARCHAR(15) NOT NULL CHECK (EstadoNovo IN ('Aberto', 'Em Análise', 'Fechado')),
+    Estado VARCHAR(15) NOT NULL CHECK (Estado IN ('Aberto', 'Em Análise', 'Fechado')),
     ValorIndemnizadoNestaFase Dom_Moeda,
     DescricaoAlteracao VARCHAR(200) NOT NULL
 );

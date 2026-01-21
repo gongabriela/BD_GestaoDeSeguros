@@ -86,11 +86,11 @@ INSERT INTO ApoliceEntidadeBem (ApoliceID, EntidadeBemID)
 VALUES
 (1, 1), (2, 1), (3, 3), (5, 2), (6, 4), (10, 2);
 
-INSERT INTO HistoricoApolice (ApoliceID, DataAlteracao, EstadoAnterior, EstadoNovo, DescricaoAlteracao)
+INSERT INTO HistoricoApolice (ApoliceID, DataAlteracao, Estado, DescricaoAlteracao)
 VALUES
-(1, '2025-01-10', 'Ativa', 'Suspensa', 'Falta de pagamento'),
-(1, '2025-01-12', 'Suspensa', 'Ativa', 'Pagamento regularizado'),
-(2, '2025-02-15', 'Ativa', 'Cancelada', 'Solicitação do cliente');
+(1, '2025-01-10','Suspensa', 'Falta de pagamento'),
+(1, '2025-01-12', 'Ativa', 'Pagamento regularizado'),
+(2, '2025-02-15', 'Cancelada', 'Solicitação do cliente');
 
 INSERT INTO Premio (ApoliceID, ValorContratado, Periodicidade, DataVencimento)
 VALUES
@@ -116,10 +116,10 @@ VALUES
 (1, '2025-06-10', '2025-06-11', 'Quebra de vidro', 150.00, 150.00),
 (5, '2025-08-15', '2025-08-20', 'Dano elétrico', 2000.00, 0.00);
 
-INSERT INTO HistoricoSinistro (SinistroID, DataAlteracao, EstadoAnterior, EstadoNovo, ValorIndemnizadoNestaFase, DescricaoAlteracao)
+INSERT INTO HistoricoSinistro (SinistroID, DataAlteracao, Estado, ValorIndemnizadoNestaFase, DescricaoAlteracao)
 VALUES
-(1, '2025-05-22', 'Aberto', 'Em Análise', 0.00, 'Início da peritagem'),
-(1, '2025-05-28', 'Em Análise', 'Fechado', 450.00, 'Indemnização paga'),
-(3, '2025-08-20', 'Aberto', 'Em Análise', 0.00, 'Aguardar orçamentos');
+(1, '2025-05-22', 'Em Análise', 0.00, 'Início da peritagem'),
+(1, '2025-05-28', 'Fechado', 450.00, 'Indemnização paga'),
+(3, '2025-08-20', 'Em Análise', 0.00, 'Aguardar orçamentos');
 GO
 
