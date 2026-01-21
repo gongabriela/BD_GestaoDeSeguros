@@ -1,90 +1,124 @@
 USE [GestaoDeSeguros]
-GO 
+GO
 
--- Inserir entidades de pessoas
 INSERT INTO EntidadePessoa (Nome, NIF, TipoEntidade, DataNascimento, Morada, Localidade, Telefone, Email, Status)
 VALUES
-('Entidade Fisica A', '100000001', 'Pessoa Física', '1985-01-01', 'Rua A', 'Lisboa', '910000001', 'a@fisica.com', 'Ativo'),
-('Entidade Fisica B', '100000002', 'Pessoa Física', '1992-02-02', 'Rua B', 'Porto', '910000002', 'b@fisica.com', 'Ativo'),
-('Entidade Fisica C', '100000003', 'Pessoa Física', '1978-03-03', 'Rua C', 'Braga', '910000003', 'c@fisica.com', 'Ativo'),
-('Entidade Fisica D', '100000004', 'Pessoa Física', '2000-04-04', 'Rua D', 'Coimbra', '910000004', 'd@fisica.com', 'Ativo'),
-('Entidade Juridica A', '500000001', 'Pessoa Jurídica', '2010-01-01', 'Av A', 'Lisboa', '210000001', 'a@empresa.com', 'Ativo'),
-('Entidade Juridica B', '500000002', 'Pessoa Jurídica', '2015-02-02', 'Av B', 'Porto', '210000002', 'b@empresa.com', 'Ativo'),
-('Entidade Juridica C', '500000003', 'Pessoa Jurídica', '2018-03-03', 'Av C', 'Faro', '210000003', 'c@empresa.com', 'Ativo'),
-('Entidade Juridica D', '500000004', 'Pessoa Jurídica', '2020-04-04', 'Av D', 'Evora', '210000004', 'd@empresa.com', 'Ativo');
+('Ana Silva', '100000001', 'Pessoa Física', '1985-05-20', 'Rua das Flores, 1', 'Lisboa', '910000001', 'ana@email.com', 'Ativo'),
+('Bruno Costa', '100000002', 'Pessoa Física', '1992-10-10', 'Rua do Porto, 2', 'Porto', '910000002', 'bruno@email.com', 'Ativo'),
+('Carlos Sousa', '100000003', 'Pessoa Física', '1978-03-15', 'Rua de Braga, 3', 'Braga', '910000003', 'carlos@email.com', 'Ativo'),
+('Daniela Reis', '100000004', 'Pessoa Física', '2000-12-25', 'Rua de Coimbra, 4', 'Coimbra', '910000004', 'daniela@email.com', 'Ativo'),
+('Tech Solutions Lda', '500000001', 'Pessoa Jurídica', '2010-01-01', 'Av. da Liberdade, 100', 'Lisboa', '210000001', 'geral@tech.com', 'Ativo'),
+('Construções Norte SA', '500000002', 'Pessoa Jurídica', '2015-06-01', 'Zona Industrial, Lote 5', 'Porto', '220000002', 'norte@email.com', 'Ativo'),
+('Padaria Central', '500000003', 'Pessoa Jurídica', '2018-03-20', 'Praça do Município, 10', 'Faro', '289000003', 'padaria@email.com', 'Ativo'),
+('Consultoria X', '500000004', 'Pessoa Jurídica', '2020-09-15', 'Business Center, Sl 4', 'Lisboa', '210000004', 'x@email.com', 'Ativo');
 
--- Inserir entidades de bens
 INSERT INTO EntidadeBem (ProprietárioID, DescricaoBem, IdentificacaoBem, ValorEstimado, DataAquisicao)
 VALUES
-(1, 'Carro Mercedes', 'AB-11-CD', 45000.00, '2024-05-10'),
-(5, 'Armazém Logístico', 'MAT-9988', 500000.00, '2020-01-01'),
-(2, 'Apartamento T2', 'PRED-4455', 200000.00, '2022-11-15'),
-(6, 'Frota Camiões', 'TRUCK-01', 120000.00, '2023-08-20');
+(1, 'Tesla Model 3', 'AA-11-BB', 45000.00, '2024-01-10'),
+(5, 'Servidores Rack H1', 'SRV-9988', 50000.00, '2023-05-01'),
+(2, 'Apartamento T3', 'MAT-4455-P', 250000.00, '2022-11-15'),
+(6, 'Frota de Camiões', 'TRUCK-GROUP-1', 400000.00, '2023-08-20');
 
--- Inserir seguradoras
 INSERT INTO Seguradora (Nome, NIF, Morada, Localidade, Email, Telefone, Status)
 VALUES
-('Seguradora A', '501000001', 'Torre A', 'Lisboa', 's_a@seg.pt', '211111111', 'Ativa'),
-('Seguradora B', '501000002', 'Torre B', 'Porto', 's_b@seg.pt', '212222222', 'Ativa'),
-('Seguradora C', '501000003', 'Torre C', 'Lisboa', 's_c@seg.pt', '213333333', 'Ativa'),
-('Seguradora D', '501000004', 'Torre D', 'Porto', 's_d@seg.pt', '214444444', 'Ativa');
+('Seguradora A', '501000001', 'Torre A, Lisboa', 'Lisboa', 'geral@seg-a.pt', '211111111', 'Ativa'),
+('Seguradora B', '501000002', 'Edifício B, Porto', 'Porto', 'geral@seg-b.pt', '221111111', 'Ativa'),
+('Seguradora C', '501000003', 'Avenida C, Lisboa', 'Lisboa', 'geral@seg-c.pt', '213333333', 'Ativa'),
+('Seguradora D', '501000004', 'Praça D, Porto', 'Porto', 'geral@seg-d.pt', '224444444', 'Ativa');
 
--- Inserir mediadores
 INSERT INTO Mediador (Nome, NIF, Morada, Localidade, Email, Telefone, Status)
 VALUES
-('Mediador A', '201000001', 'Loja A', 'Lisboa', 'm_a@med.pt', '219999991', 'Ativo'),
-('Mediador B', '201000002', 'Loja B', 'Porto', 'm_b@med.pt', '219999992', 'Ativo'),
-('Mediador C', '201000003', 'Loja C', 'Lisboa', 'm_c@med.pt', '219999993', 'Ativo'),
-('Mediador D', '201000004', 'Loja D', 'Porto', 'm_d@med.pt', '219999994', 'Ativo');
+('Mediador Principal', '201000001', 'Rua do Comércio', 'Lisboa', 'vendas@med.pt', '219999991', 'Ativo'),
+('Mediador Norte', '201000002', 'Rua Central', 'Porto', 'norte@med.pt', '229999992', 'Ativo');
 
--- Inserir tipos de seguro
+INSERT INTO MediadorSeguradora (MediadorID, SeguradoraID, DataInicio, DataFim, Status)
+VALUES
+(1, 1, '2023-01-01', NULL, 'Ativo'),
+(2, 1, '2020-01-01', '2023-12-31', 'Inativo'),
+(2, 2, '2023-02-01', NULL, 'Ativo'),
+(1, 3, '2023-03-01', NULL, 'Ativo');
+
 INSERT INTO TipoDeSeguro (Descricao) VALUES ('Auto'), ('Vida'), ('Multiriscos'), ('Saúde');
 
--- Inserir produtos
 INSERT INTO Produto (SeguradoraID, TipoSeguroID, NomeProduto, Status)
-VALUES (1, 1, 'Auto Total', 'Ativo'), (2, 3, 'Casa Segura', 'Ativo');
+VALUES
+(1, 1, 'Auto Global', 'Ativo'),
+(2, 3, 'Casa Segura', 'Ativo'),
+(3, 2, 'Vida Proteção', 'Ativo');
 
--- Inserir planos de produtos
 INSERT INTO ProdutoPlano (ProdutoID, NomePlano, DataInicioVigencia)
-VALUES (1, 'Plano Auto Gold', '2024-01-01'), (2, 'Plano Habitação Plus', '2024-01-01');
+VALUES
+(1, 'Plano Auto Base', '2024-01-01'),
+(1, 'Plano Auto VIP', '2024-01-01'),
+(2, 'Plano Habitação Plus', '2024-01-01'),
+(3, 'Plano Vida Familiar', '2024-01-01');
 
--- Inserir apólices
+INSERT INTO CoberturaPlano (ProdutoPlanoID, DescricaoCobertura, LimiteCobertura, Franquia)
+VALUES
+(1, 'Danos Próprios', 30000.00, 500.00),
+(1, 'Responsabilidade Civil', 100000.00, 0.00),
+(3, 'Incêndio', 200000.00, 1000.00),
+(4, 'Morte Acidental', 50000.00, 0.00);
+
+INSERT INTO CoberturaProdutoPlano (ProdutoPlanoID, CoberturaPlanoID)
+VALUES (1, 1), (1, 2), (3, 3), (4, 4);
+
 INSERT INTO Apolice (ProdutoPlanoID, MediadorID, DataEmissao, DataInicioVigencia, DataFimVigencia)
 VALUES
-(1, 1, '2025-01-01', '2025-01-01', '2026-01-01'), -- Ap 1
-(1, 2, '2025-02-01', '2025-02-01', '2026-02-01'), -- Ap 2
-(2, 3, '2025-03-01', '2025-03-01', '2026-03-01'), -- Ap 3
-(2, 4, '2025-04-01', '2025-04-01', '2026-04-01'), -- Ap 4
-(1, 1, '2025-05-01', '2025-05-01', '2026-05-01'), -- Ap 5
-(2, 2, '2025-06-01', '2025-06-01', '2026-06-01'), -- Ap 6
-(1, 3, '2025-07-01', '2025-07-01', '2026-07-01'), -- Ap 7
-(2, 4, '2025-08-01', '2025-08-01', '2026-08-01'), -- Ap 8
-(1, 1, '2025-09-01', '2025-09-01', '2026-09-01'), -- Ap 9
-(2, 2, '2025-10-01', '2025-10-01', '2026-10-01'); -- Ap 10
+(1, 1, '2025-01-01', '2025-01-01', '2026-01-01'),
+(2, 1, '2025-01-05', '2025-01-05', '2026-01-05'),
+(3, 2, '2025-02-01', '2025-02-01', '2026-02-01'),
+(4, 1, '2025-03-01', '2025-03-01', '2026-03-01'),
+(1, 1, '2025-04-01', '2025-04-01', '2026-04-01'),
+(2, 2, '2025-05-01', '2025-05-01', '2026-05-01'),
+(3, 1, '2025-06-01', '2025-06-01', '2026-06-01'),
+(1, 1, '2025-07-01', '2025-07-01', '2026-07-01'),
+(2, 2, '2025-08-01', '2025-08-01', '2026-08-01'),
+(1, 1, '2025-09-01', '2025-09-01', '2026-09-01');
 
--- Associar apólices a entidades de pessoas (Tomadores)
 INSERT INTO ApoliceEntidadePessoa (ApoliceID, EntidadePessoaID, Papel)
 VALUES
-(1, 1, 'Tomador'), (2, 2, 'Tomador'), (3, 5, 'Tomador'), (4, 6, 'Tomador'),
-(5, 3, 'Tomador'), (6, 7, 'Tomador'), (7, 4, 'Tomador'), (8, 8, 'Tomador'),
-(9, 1, 'Tomador'), (10, 5, 'Tomador');
+(1, 1, 'Tomador'), (2, 1, 'Tomador'), (7, 1, 'Tomador'),
+(3, 2, 'Tomador'), (4, 3, 'Tomador'), (8, 4, 'Tomador'),
+(5, 5, 'Tomador'), (10, 5, 'Tomador'), (6, 6, 'Tomador'), (9, 8, 'Tomador');
 
--- Associar apólices a entidades de bens (Segurados)
+INSERT INTO ApoliceEntidadeBem (ApoliceID, EntidadeBemID)
+VALUES
+(1, 1), (2, 1), (3, 3), (5, 2), (6, 4), (10, 2);
+
+INSERT INTO HistoricoApolice (ApoliceID, DataAlteracao, EstadoAnterior, EstadoNovo, DescricaoAlteracao)
+VALUES
+(1, '2025-01-10', 'Ativa', 'Suspensa', 'Falta de pagamento'),
+(1, '2025-01-12', 'Suspensa', 'Ativa', 'Pagamento regularizado'),
+(2, '2025-02-15', 'Ativa', 'Cancelada', 'Solicitação do cliente');
+
 INSERT INTO Premio (ApoliceID, ValorContratado, Periodicidade, DataVencimento)
 VALUES
-(1, 500.00, 'Anual', '2025-01-15'), (2, 450.00, 'Anual', '2025-02-15'),
-(3, 1200.00, 'Anual', '2025-03-15'), (4, 1500.00, 'Anual', '2025-04-15'),
-(5, 300.00, 'Anual', '2025-05-15'), (6, 800.00, 'Anual', '2025-06-15'),
-(7, 400.00, 'Anual', '2025-07-15'), (8, 950.00, 'Anual', '2025-08-15'),
-(9, 500.00, 'Anual', '2025-09-15'), (10, 1100.00, 'Anual', '2025-10-15');
+(1, 400.00, 'Anual', '2025-01-15'), (2, 600.00, 'Anual', '2025-01-20'),
+(3, 350.00, 'Anual', '2025-02-15'), (4, 120.00, 'Mensal', '2025-03-15'),
+(5, 1200.00, 'Anual', '2025-04-15'), (6, 2500.00, 'Anual', '2025-05-15'),
+(7, 300.00, 'Anual', '2025-06-15'), (8, 420.00, 'Anual', '2025-07-15'),
+(9, 150.00, 'Mensal', '2025-08-15'), (10, 800.00, 'Anual', '2025-09-15');
 
--- Inserir pagamentos de prémios
 INSERT INTO Pagamento (PremioID, DataPagamento, ValorPago, MetodoPagamento)
 VALUES
-(1, '2025-01-10', 500.00, 'Multibanco'),
-(2, '2025-02-10', 450.00, 'Multibanco'),
-(3, '2025-03-10', 1200.00, 'Débito Direto'),
-(5, '2025-05-10', 300.00, 'Dinheiro'),
-(7, '2025-07-10', 400.00, 'Cartão de Crédito'),
-(9, '2025-09-10', 500.00, 'Multibanco');
+(1, '2025-01-10', 400.00, 'Multibanco'),
+(2, '2025-01-15', 600.00, 'Multibanco'),
+(3, '2025-02-10', 350.00, 'Débito Direto'),
+(4, '2025-03-10', 120.00, 'Dinheiro'),
+(5, '2025-04-10', 1200.00, 'Multibanco'),
+(6, '2025-05-10', 2500.00, 'Multibanco'),
+(7, '2025-06-10', 300.00, 'Cartão de Crédito');
+
+INSERT INTO Sinistro (ApoliceID, DataOcorrencia, DataParticipacao, Descricao, ValorReclamado, ValorIndenizacaoTotal)
+VALUES
+(1, '2025-05-20', '2025-05-22', 'Pequena colisão', 500.00, 450.00),
+(1, '2025-06-10', '2025-06-11', 'Quebra de vidro', 150.00, 150.00),
+(5, '2025-08-15', '2025-08-20', 'Dano elétrico', 2000.00, 0.00);
+
+INSERT INTO HistoricoSinistro (SinistroID, DataAlteracao, EstadoAnterior, EstadoNovo, ValorIndemnizadoNestaFase, DescricaoAlteracao)
+VALUES
+(1, '2025-05-22', 'Aberto', 'Em Análise', 0.00, 'Início da peritagem'),
+(1, '2025-05-28', 'Em Análise', 'Fechado', 450.00, 'Indemnização paga'),
+(3, '2025-08-20', 'Aberto', 'Em Análise', 0.00, 'Aguardar orçamentos');
 GO
