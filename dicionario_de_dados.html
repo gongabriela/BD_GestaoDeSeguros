@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dicionário de Dados - Gestão de Seguros</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 8px;
+            font-size: 1.8em;
+        }
+        h3 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-top: 25px;
+        }
+        h4 {
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px 8px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        p {
+            margin: 4px 0;
+            font-size: 0.95em;
+        }
+        code {
+            background-color: #eee;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.9em;
+        }
+        strong {
+             font-weight: bold;
+        }
+        br {
+            display: none;
+        }
+        strong:after {
+            content: " ";
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Dicionário de Dados - Gestão de Seguros</h1>
+    <p>Este documento detalha a estrutura do banco de dados GestaoDeSeguros</code>, incluindo tabelas, colunas, tipos de dados e relacionamentos.</p>
+
+    <hr>
+
+    <h3>Tipos de Dados Personalizados</h3>
+    <p>Este banco de dados utiliza tipos de dados personalizados para garantir a consistência e a integridade dos dados.</p>
+    <h4>Dom_Moeda</code></h4>
+    <p>
+        <strong>Descrição:</strong> Tipo de dado para representar valores monetários.<br>
+        <strong>Tipo Base:</strong> DECIMAL(10, 2) NOT NULL</code>.<br>
+        <strong>Regra Associada:</strong> RL_ValoresMonetarios</code>, que garante que o valor seja sempre maior ou igual a zero (>= 0</code>).<br>
+        <strong>Uso:</strong> Utilizado em todas as colunas que armazenam valores financeiros, como prémios, franquias e indemnizações, para assegurar que não sejam negativos e que tenham sempre duas casas decimais.
+    </p>
+
+    <h3>EntidadePessoa</code></h3>
+    <p><strong>Descrição:</strong> Armazena informações sobre as entidades (pessoas físicas ou jurídicas) que são clientes ou potenciais clientes.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>EntidadePessoaID</code></td>
+                <td>SMALLINT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único da entidade.</td>
+            </tr>
+            <tr>
+                <td>Nome</code></td>
+                <td>VARCHAR(100)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Nome completo ou razão social da entidade.</td>
+            </tr>
+            <tr>
+                <td>NIF</code></td>
+                <td>CHAR(9)</code></td>
+                <td>NOT NULL</code>, UNIQUE</code></td>
+                <td>Número de Identificação Fiscal da entidade.</td>
+            </tr>
+            <tr>
+                <td>TipoEntidade</code></td>
+                <td>VARCHAR(20)</code></td>
+                <td>NOT NULL</code>, CHECK</code></td>
+                <td>Tipo de entidade ('Pessoa Física' ou 'Pessoa Jurídica').</td>
+            </tr>
+            <tr>
+                <td>DataNascimento</code></td>
+                <td>DATE</code></td>
+                <td>NOT NULL</code></td>
+                <td>Data de nascimento ou de constituição da entidade.</td>
+            </tr>
+            <tr>
+                <td>Morada</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Endereço da entidade.</td>
+            </tr>
+            <tr>
+                <td>Localidade</code></td>
+                <td>VARCHAR(100)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Localidade da morada.</td>
+            </tr>
+            <tr>
+                <td>Telefone</code></td>
+                <td>CHAR(15)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Número de telefone para contato.</td>
+            </tr>
+            <tr>
+                <td>Email</code></td>
+                <td>VARCHAR(100)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Endereço de e-mail para contato.</td>
+            </tr>
+            <tr>
+                <td>Status</code></td>
+                <td>VARCHAR(10)</code></td>
+                <td>NOT NULL</code>, CHECK</code></td>
+                <td>Status da entidade ('Ativo' ou 'Inativo').</td>
+            </tr>
+            <tr>
+                <td>Observacoes</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NULL</code></td>
+                <td>Observações adicionais sobre a entidade.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>EntidadeBem</code></h3>
+    <p><strong>Descrição:</strong> Armazena informações sobre os bens segurados (e.g., imóveis, veículos) pertencentes a uma entidade.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>EntidadeBemID</code></td>
+                <td>INT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único do bem.</td>
+            </tr>
+            <tr>
+                <td>ProprietárioID</code></td>
+                <td>SMALLINT</code></td>
+                <td>NOT NULL</code>, FK</code> to EntidadePessoa</code></td>
+                <td>Identificador do proprietário do bem.</td>
+            </tr>
+            <tr>
+                <td>DescricaoBem</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Descrição detalhada do bem.</td>
+            </tr>
+            <tr>
+                <td>IdentificacaoBem</code></td>
+                <td>VARCHAR(100)</code></td>
+                <td>NOT NULL</code>, UNIQUE</code></td>
+                <td>Identificação única do bem (e.g., matrícula, chassi).</td>
+            </tr>
+            <tr>
+                <td>ValorEstimado</code></td>
+                <td>Dom_Moeda</code></td>
+                <td>NOT NULL</code></td>
+                <td>Valor estimado do bem.</td>
+            </tr>
+            <tr>
+                <td>DataAquisicao</code></td>
+                <td>DATE</code></td>
+                <td>NOT NULL</code></td>
+                <td>Data de aquisição do bem.</td>
+            </tr>
+            <tr>
+                <td>Observacoes</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NULL</code></td>
+                <td>Observações adicionais sobre o bem.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Seguradora</code></h3>
+    <p><strong>Descrição:</strong> Armazena informações sobre as companhias seguradoras.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>SeguradoraID</code></td>
+                <td>SMALLINT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único da seguradora.</td>
+            </tr>
+            <tr>
+                <td>Nome</code></td>
+                <td>VARCHAR(100)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Nome da seguradora.</td>
+            </tr>
+            <tr>
+                <td>NIF</code></td>
+                <td>CHAR(9)</code></td>
+                <td>NOT NULL</code>, UNIQUE</code></td>
+                <td>Número de Identificação Fiscal da seguradora.</td>
+            </tr>
+            <tr>
+                <td>Morada</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Endereço da seguradora.</td>
+            </tr>
+            <tr>
+                <td>Localidade</code></td>
+                <td>VARCHAR(100)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Localidade da morada.</td>
+            </tr>
+            <tr>
+                <td>Email</code></td>
+                <td>VARCHAR(100)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Endereço de e-mail para contato.</td>
+            </tr>
+            <tr>
+                <td>Telefone</code></td>
+                <td>CHAR(15)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Número de telefone para contato.</td>
+            </tr>
+            <tr>
+                <td>Status</code></td>
+                <td>VARCHAR(10)</code></td>
+                <td>NOT NULL</code>, CHECK</code></td>
+                <td>Status da seguradora ('Ativa' ou 'Inativa').</td>
+            </tr>
+            <tr>
+                <td>Observacoes</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NULL</code></td>
+                <td>Observações adicionais sobre a seguradora.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Mediador</code></h3>
+    <p><strong>Descrição:</strong> Armazena informações sobre os mediadores de seguros.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>MediadorID</code></td>
+                <td>SMALLINT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único do mediador.</td>
+            </tr>
+            <tr>
+                <td>Nome</code></td>
+                <td>VARCHAR(100)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Nome do mediador.</td>
+            </tr>
+            <tr>
+                <td>NIF</code></td>
+                <td>CHAR(9)</code></td>
+                <td>NOT NULL</code>, UNIQUE</code></td>
+                <td>Número de Identificação Fiscal do mediador.</td>
+            </tr>
+            <tr>
+                <td>Morada</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Endereço do mediador.</td>
+            </tr>
+            <tr>
+                <td>Localidade</code></td>
+                <td>VARCHAR(100)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Localidade da morada.</td>
+            </tr>
+            <tr>
+                <td>Email</code></td>
+                <td>VARCHAR(100)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Endereço de e-mail para contato.</td>
+            </tr>
+            <tr>
+                <td>Telefone</code></td>
+                <td>CHAR(15)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Número de telefone para contato.</td>
+            </tr>
+            <tr>
+                <td>Status</code></td>
+                <td>VARCHAR(10)</code></td>
+                <td>NOT NULL</code>, CHECK</code></td>
+                <td>Status do mediador ('Ativo' ou 'Inativo').</td>
+            </tr>
+            <tr>
+                <td>Observacoes</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NULL</code></td>
+                <td>Observações adicionais sobre o mediador.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>MediadorSeguradora</code></h3>
+    <p><strong>Descrição:</strong> Tabela de associação que representa o relacionamento entre mediadores e seguradoras.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>MediadorID</code></td>
+                <td>SMALLINT</code></td>
+                <td>PK</code>, FK</code> to Mediador</code></td>
+                <td>Identificador do mediador.</td>
+            </tr>
+            <tr>
+                <td>SeguradoraID</code></td>
+                <td>SMALLINT</code></td>
+                <td>PK</code>, FK</code> to Seguradora</code></td>
+                <td>Identificador da seguradora.</td>
+            </tr>
+            <tr>
+                <td>DataInicio</code></td>
+                <td>DATE</code></td>
+                <td>NOT NULL</code></td>
+                <td>Data de início da parceria.</td>
+            </tr>
+            <tr>
+                <td>DataFim</code></td>
+                <td>DATE</code></td>
+                <td>NULL</code></td>
+                <td>Data de fim da parceria.</td>
+            </tr>
+            <tr>
+                <td>Status</code></td>
+                <td>VARCHAR(10)</code></td>
+                <td>NOT NULL</code>, CHECK</code></td>
+                <td>Status da parceria ('Ativo' ou 'Inativo').</td>
+            </tr>
+            <tr>
+                <td>Observacoes</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NULL</code></td>
+                <td>Observações adicionais.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>TipoDeSeguro</code></h3>
+    <p><strong>Descrição:</strong> Tabela de lookup para os diferentes tipos de seguro disponíveis (e.g., Automóvel, Saúde, Vida).</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>TipoSeguroID</code></td>
+                <td>SMALLINT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único do tipo de seguro.</td>
+            </tr>
+            <tr>
+                <td>Descricao</code></td>
+                <td>VARCHAR(100)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Descrição do tipo de seguro.</td>
+            </tr>
+            <tr>
+                <td>Observacoes</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NULL</code></td>
+                <td>Observações adicionais.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Produto</code></h3>
+    <p><strong>Descrição:</strong> Armazena os produtos de seguro oferecidos pelas seguradoras.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>ProdutoID</code></td>
+                <td>SMALLINT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único do produto.</td>
+            </tr>
+            <tr>
+                <td>SeguradoraID</code></td>
+                <td>SMALLINT</code></td>
+                <td>NOT NULL</code>, FK</code> to Seguradora</code></td>
+                <td>Identificador da seguradora que oferece o produto.</td>
+            </tr>
+            <tr>
+                <td>TipoSeguroID</code></td>
+                <td>SMALLINT</code></td>
+                <td>NOT NULL</code>, FK</code> to TipoDeSeguro</code></td>
+                <td>Identificador do tipo de seguro.</td>
+            </tr>
+            <tr>
+                <td>NomeProduto</code></td>
+                <td>VARCHAR(100)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Nome comercial do produto.</td>
+            </tr>
+            <tr>
+                <td>Status</code></td>
+                <td>VARCHAR(15)</code></td>
+                <td>NOT NULL</code>, CHECK</code></td>
+                <td>Status do produto ('Ativo' ou 'Descontinuado').</td>
+            </tr>
+            <tr>
+                <td>Observacoes</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NULL</code></td>
+                <td>Observações adicionais.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>ProdutoPlano</code></h3>
+    <p><strong>Descrição:</strong> Detalha os diferentes planos dentro de um produto de seguro.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>ProdutoPlanoID</code></td>
+                <td>INT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único do plano.</td>
+            </tr>
+            <tr>
+                <td>ProdutoID</code></td>
+                <td>SMALLINT</code></td>
+                <td>NOT NULL</code>, FK</code> to Produto</code></td>
+                <td>Identificador do produto ao qual o plano pertence.</td>
+            </tr>
+            <tr>
+                <td>NomePlano</code></td>
+                <td>VARCHAR(100)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Nome do plano.</td>
+            </tr>
+            <tr>
+                <td>DataInicioVigencia</code></td>
+                <td>DATE</code></td>
+                <td>NOT NULL</code></td>
+                <td>Data de início de vigência do plano.</td>
+            </tr>
+            <tr>
+                <td>DataFimVigencia</code></td>
+                <td>DATE</code></td>
+                <td>NULL</code></td>
+                <td>Data de fim de vigência do plano.</td>
+            </tr>
+            <tr>
+                <td>Observacoes</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NULL</code></td>
+                <td>Observações adicionais.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>CoberturaPlano</code></h3>
+    <p><strong>Descrição:</strong> Armazena as coberturas específicas que podem ser associadas a um plano de seguro.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>CoberturaPlanoID</code></td>
+                <td>INT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único da cobertura.</td>
+            </tr>
+            <tr>
+                <td>ProdutoPlanoID</code></td>
+                <td>INT</code></td>
+                <td>NOT NULL</code>, FK</code> to ProdutoPlano</code></td>
+                <td>Identificador do plano associado.</td>
+            </tr>
+            <tr>
+                <td>DescricaoCobertura</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Descrição da cobertura.</td>
+            </tr>
+            <tr>
+                <td>LimiteCobertura</code></td>
+                <td>Dom_Moeda</code></td>
+                <td>NOT NULL</code></td>
+                <td>Limite monetário da cobertura.</td>
+            </tr>
+            <tr>
+                <td>Franquia</code></td>
+                <td>Dom_Moeda</code></td>
+                <td>NOT NULL</code></td>
+                <td>Valor da franquia.</td>
+            </tr>
+            <tr>
+                <td>Observacoes</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NULL</code></td>
+                <td>Observações adicionais.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>CoberturaProdutoPlano</code></h3>
+    <p><strong>Descrição:</strong> Tabela de associação entre as coberturas e os planos de produtos.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>CoberturaProdutoPlanoID</code></td>
+                <td>INT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único da associação.</td>
+            </tr>
+            <tr>
+                <td>ProdutoPlanoID</code></td>
+                <td>INT</code></td>
+                <td>NOT NULL</code>, FK</code> to ProdutoPlano</code></td>
+                <td>Identificador do plano.</td>
+            </tr>
+            <tr>
+                <td>CoberturaPlanoID</code></td>
+                <td>INT</code></td>
+                <td>NOT NULL</code>, FK</code> to CoberturaPlano</code></td>
+                <td>Identificador da cobertura.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Apolice</code></h3>
+    <p><strong>Descrição:</strong> Armazena as apólices de seguro contratadas.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>ApoliceID</code></td>
+                <td>INT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único da apólice.</td>
+            </tr>
+            <tr>
+                <td>ProdutoPlanoID</code></td>
+                <td>INT</code></td>
+                <td>NOT NULL</code>, FK</code> to ProdutoPlano</code></td>
+                <td>Identificador do plano de seguro contratado.</td>
+            </tr>
+            <tr>
+                <td>MediadorID</code></td>
+                <td>SMALLINT</code></td>
+                <td>NOT NULL</code>, FK</code> to Mediador</code></td>
+                <td>Identificador do mediador envolvido.</td>
+            </tr>
+            <tr>
+                <td>DataEmissao</code></td>
+                <td>DATE</code></td>
+                <td>NOT NULL</code>, DEFAULT GETDATE()</code></td>
+                <td>Data de emissão da apólice.</td>
+            </tr>
+            <tr>
+                <td>DataInicioVigencia</code></td>
+                <td>DATE</code></td>
+                <td>NOT NULL</code></td>
+                <td>Data de início de vigência da apólice.</td>
+            </tr>
+            <tr>
+                <td>DataFimVigencia</code></td>
+                <td>DATE</code></td>
+                <td>NOT NULL</code></td>
+                <td>Data de fim de vigência da apólice.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>ApoliceEntidadePessoa</code></h3>
+    <p><strong>Descrição:</strong> Associa as entidades (pessoas) a uma apólice, definindo o seu papel.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>ApoliceEntidadeID</code></td>
+                <td>INT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único da associação.</td>
+            </tr>
+            <tr>
+                <td>ApoliceID</code></td>
+                <td>INT</code></td>
+                <td>NOT NULL</code>, FK</code> to Apolice</code></td>
+                <td>Identificador da apólice.</td>
+            </tr>
+            <tr>
+                <td>EntidadePessoaID</code></td>
+                <td>SMALLINT</code></td>
+                <td>NOT NULL</code>, FK</code> to EntidadePessoa</code></td>
+                <td>Identificador da entidade.</td>
+            </tr>
+            <tr>
+                <td>Papel</code></td>
+                <td>VARCHAR(15)</code></td>
+                <td>NOT NULL</code>, CHECK</code></td>
+                <td>Papel da entidade na apólice ('Tomador', 'Segurado', 'Beneficiário').</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>ApoliceEntidadeBem</code></h3>
+    <p><strong>Descrição:</strong> Associa um bem segurado a uma apólice.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>ApoliceEntidadeBemID</code></td>
+                <td>INT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único da associação.</td>
+            </tr>
+            <tr>
+                <td>ApoliceID</code></td>
+                <td>INT</code></td>
+                <td>NOT NULL</code>, FK</code> to Apolice</code></td>
+                <td>Identificador da apólice.</td>
+            </tr>
+            <tr>
+                <td>EntidadeBemID</code></td>
+                <td>INT</code></td>
+                <td>NOT NULL</code>, FK</code> to EntidadeBem</code></td>
+                <td>Identificador do bem.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>HistoricoApolice</code></h3>
+    <p><strong>Descrição:</strong> Regista o histórico de alterações de estado de uma apólice.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>HistoricoApoliceID</code></td>
+                <td>INT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único do registo de histórico.</td>
+            </tr>
+            <tr>
+                <td>ApoliceID</code></td>
+                <td>INT</code></td>
+                <td>NOT NULL</code>, FK</code> to Apolice</code></td>
+                <td>Identificador da apólice.</td>
+            </tr>
+            <tr>
+                <td>DataAlteracao</code></td>
+                <td>DATETIME</code></td>
+                <td>NOT NULL</code>, DEFAULT GETDATE()</code></td>
+                <td>Data e hora da alteração.</td>
+            </tr>
+            <tr>
+                <td>Estado</code></td>
+                <td>VARCHAR(15)</code></td>
+                <td>NOT NULL</code>, CHECK</code></td>
+                <td>Novo estado da apólice ('Ativa', 'Suspensa', 'Cancelada', 'Expirada').</td>
+            </tr>
+            <tr>
+                <td>DescricaoAlteracao</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Descrição da alteração realizada.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Premio</code></h3>
+    <p><strong>Descrição:</strong> Armazena informações sobre os prémios de seguro a serem pagos.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>PremioID</code></td>
+                <td>INT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único do prémio.</td>
+            </tr>
+            <tr>
+                <td>ApoliceID</code></td>
+                <td>INT</code></td>
+                <td>NOT NULL</code>, UNIQUE</code>, FK</code> to Apolice</code></td>
+                <td>Identificador da apólice associada.</td>
+            </tr>
+            <tr>
+                <td>ValorContratado</code></td>
+                <td>Dom_Moeda</code></td>
+                <td>NOT NULL</code></td>
+                <td>Valor do prémio contratado.</td>
+            </tr>
+            <tr>
+                <td>Periodicidade</code></td>
+                <td>VARCHAR(15)</code></td>
+                <td>NOT NULL</code>, CHECK</code></td>
+                <td>Periodicidade do pagamento ('Mensal', 'Trimestral', 'Semestral', 'Anual').</td>
+            </tr>
+            <tr>
+                <td>DataVencimento</code></td>
+                <td>DATE</code></td>
+                <td>NOT NULL</code></td>
+                <td>Data de vencimento do prémio.</td>
+            </tr>
+            <tr>
+                <td>Observacoes</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NULL</code></td>
+                <td>Observações adicionais.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Pagamento</code></h3>
+    <p><strong>Descrição:</strong> Regista os pagamentos de prémios efetuados.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>PagamentoID</code></td>
+                <td>INT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único do pagamento.</td>
+            </tr>
+            <tr>
+                <td>PremioID</code></td>
+                <td>INT</code></td>
+                <td>NOT NULL</code>, FK</code> to Premio</code></td>
+                <td>Identificador do prémio que foi pago.</td>
+            </tr>
+            <tr>
+                <td>DataPagamento</code></td>
+                <td>DATE</code></td>
+                <td>NOT NULL</code></td>
+                <td>Data em que o pagamento foi efetuado.</td>
+            </tr>
+            <tr>
+                <td>ValorPago</code></td>
+                <td>Dom_Moeda</code></td>
+                <td>NOT NULL</code></td>
+                <td>Valor efetivamente pago.</td>
+            </tr>
+            <tr>
+                <td>MetodoPagamento</code></td>
+                <td>VARCHAR(20)</code></td>
+                <td>NOT NULL</code>, CHECK</code></td>
+                <td>Método de pagamento utilizado ('Multibanco', 'Cartão de Crédito', 'Débito Direto', 'Dinheiro').</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Sinistro</code></h3>
+    <p><strong>Descrição:</strong> Armazena informações sobre os sinistros ocorridos.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>SinistroID</code></td>
+                <td>INT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único do sinistro.</td>
+            </tr>
+            <tr>
+                <td>ApoliceID</code></td>
+                <td>INT</code></td>
+                <td>NOT NULL</code>, FK</code> to Apolice</code></td>
+                <td>Identificador da apólice relacionada.</td>
+            </tr>
+            <tr>
+                <td>DataOcorrencia</code></td>
+                <td>DATE</code></td>
+                <td>NOT NULL</code></td>
+                <td>Data da ocorrência do sinistro.</td>
+            </tr>
+            <tr>
+                <td>DataParticipacao</code></td>
+                <td>DATE</code></td>
+                <td>NOT NULL</code></td>
+                <td>Data de participação do sinistro à seguradora.</td>
+            </tr>
+            <tr>
+                <td>Descricao</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Descrição do sinistro.</td>
+            </tr>
+            <tr>
+                <td>ValorReclamado</code></td>
+                <td>Dom_Moeda</code></td>
+                <td>NOT NULL</code></td>
+                <td>Valor reclamado pelo segurado.</td>
+            </tr>
+            <tr>
+                <td>ValorIndenizacaoTotal</code></td>
+                <td>Dom_Moeda</code></td>
+                <td>NULL</code>, DEFAULT 0</code></td>
+                <td>Valor total da indenização paga.</td>
+            </tr>
+            <tr>
+                <td>Observacoes</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NULL</code></td>
+                <td>Observações adicionais.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>HistoricoSinistro</code></h3>
+    <p><strong>Descrição:</strong> Regista o histórico de alterações de estado de um sinistro.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo de Dados</th>
+                <th>Restrições</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>HistoricoSinistroID</code></td>
+                <td>INT</code></td>
+                <td>PK</code>, IDENTITY(1,1)</code></td>
+                <td>Identificador único do registo de histórico.</td>
+            </tr>
+            <tr>
+                <td>SinistroID</code></td>
+                <td>INT</code></td>
+                <td>NOT NULL</code>, FK</code> to Sinistro</code></td>
+                <td>Identificador do sinistro.</td>
+            </tr>
+            <tr>
+                <td>DataAlteracao</code></td>
+                <td>DATETIME</code></td>
+                <td>NOT NULL</code>, DEFAULT GETDATE()</code></td>
+                <td>Data e hora da alteração.</td>
+            </tr>
+            <tr>
+                <td>Estado</code></td>
+                <td>VARCHAR(15)</code></td>
+                <td>NOT NULL</code>, CHECK</code></td>
+                <td>Novo estado do sinistro ('Aberto', 'Em Análise', 'Fechado').</td>
+            </tr>
+            <tr>
+                <td>ValorIndemnizadoNestaFase</code></td>
+                <td>Dom_Moeda</code></td>
+                <td>NULL</code></td>
+                <td>Valor da indemnização paga nesta fase do processo.</td>
+            </tr>
+            <tr>
+                <td>DescricaoAlteracao</code></td>
+                <td>VARCHAR(200)</code></td>
+                <td>NOT NULL</code></td>
+                <td>Descrição da alteração realizada.</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

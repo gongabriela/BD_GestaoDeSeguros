@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabalho Final - Gestão de Seguros</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .cover {
+            background-color: #4a5766;
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+            margin-bottom: 40px;
+        }
+        .cover h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+        }
+        .cover h2 {
+            font-size: 1.5em;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+        .cover .meta-info {
+            font-size: 1.1em;
+            font-weight: 400;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 0 20px;
+        }
+        h2 {
+            font-size: 2em;
+            color: #343a40;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+            margin-top: 50px;
+            margin-bottom: 25px;
+        }
+        h3 {
+            font-size: 1.5em;
+            color: #495057;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        p, ul {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 25px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        strong {
+            color: #212529;
+        }
+        code {
+            background-color: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .image-placeholder {
+            text-align: center;
+            padding: 20px;
+            border: 1px dashed #ced4da;
+            background-color: #f1f3f5;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+         .image-placeholder img {
+            max-width: 100%;
+            height: auto;
+        }
+        #toc {
+            background-color: #e9f7ff;
+            border-left: 5px solid #007bff;
+            padding: 20px;
+            margin: 40px 0;
+            border-radius: 5px;
+        }
+        #toc h2 {
+            margin-top: 0;
+            border: none;
+            font-size: 1.8em;
+        }
+        #toc ul {
+            padding-left: 0;
+            list-style-type: none;
+        }
+        #toc li {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        #toc a {
+            text-decoration: none;
+            color: #0056b3;
+        }
+        #toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cover">
+        <h1>Gestão de Seguros</h1>
+        <h1>Trabalho Final</h1>
+        <div class="meta-info">
+            <p><strong>Autores:</strong> Gabriela Gonçalves de Oliveira & Daniela Ramos Jordão</p>
+            <p><strong>Unidade Curricular:</strong> Bases de Dados</p>
+            <p><strong>Professora:</strong> Marta Martinho</p>
+            <p><strong>Curso:</strong> UPskill Service Now 2025/2026</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <nav id="toc">
+            <h2>Índice</h2>
+            <ul>
+                <li><a href="#modelo-relacional">Modelo Relacional</a></li>
+                <li><a href="#justificacao-decisoes">Justificação das Decisões</a></li>
+                <li><a href="#relatorios-estrategicos">Relatórios Estratégicos</a></li>
+                <li><a href="#relatorio-proposto">Relatório Proposto</a></li>
+                <li><a href="#funcionalidade-proposta">Funcionalidade Proposta</a></li>
+            </ul>
+        </nav>
+
+        <section id="modelo-relacional">
+            <h2>Modelo Relacional</h2>
+            <div class="image-placeholder">
+                <p>O modelo relacional da base de dados é apresentado na imagem seguinte, detalhando as tabelas, os seus atributos e as relações entre elas.</p>
+                <img src="schema-GestaoDeSegurosFinal.png" alt="Esquema da Base de Dados de Gestão de Seguros">
+            </div>
+        </section>
+
+        <section id="justificacao-decisoes">
+            <h2>Justificação das Decisões</h2>
+
+            <h3>Separação entre Entidade Pessoa e Entidade Bem</h3>
+            <p>Optou-se por separar as entidades EntidadePessoa</code> (que inclui pessoas singulares e coletivas, com NIF e data de nascimento/constituição) e EntidadeBem</code> (objetos com identificação e valor estimado). Esta separação evita inconsistências, assegurando que apenas pessoas possam assumir o papel de tomador e que os bens sejam exclusivamente objetos de seguro.</p>
+
+            <h3>Gestão de Mediadores</h3>
+            <p>Incluiu-se explicitamente a entidade Mediador</code> e a respetiva relação MediadorSeguradora</code>, permitindo gerir múltiplos agentes e os seus períodos de atividade com cada seguradora.</p>
+
+            <h3>Auditoria e Histórico</h3>
+            <p>Foram criadas as tabelas-espelho HistoricoApolice</code> e HistoricoSinistro</code>, que registam todas as alterações de estado, datas e descrições, permitindo preservar o histórico sem sobrecarregar as tabelas transacionais ativas.</p>
+
+            <h3>Tipos de Dados e Regras Personalizadas</h3>
+            <p>Foi criado o tipo de dado Dom_Moeda</code> (decimal 10,2) e a regra RL_ValoresMonetarios</code>, garantindo que valores financeiros (prémios, franquias, indemnizações) nunca sejam negativos, centralizando a lógica de validação.</p>
+
+            <h3>Integridade Referencial</h3>
+            <p>Utilizou-se extensivamente chaves estrangeiras (FOREIGN KEY</code>) e restrições CHECK</code> em campos de estado, assegurando a qualidade dos dados inseridos.</p>
+
+            <h3>Abstração através de Views</h3>
+            <p>Todos os relatórios foram encapsulados em views</code>, facilitando a reutilização e manutenção do código.</p>
+        </section>
+
+        <section id="relatorios-estrategicos">
+            <h2>Relatórios Estratégicos</h2>
+
+            <h3>Contratos por Tipo de Seguro (vw_ContratosPorTipoDeSeguro</code>)</h3>
+            <p>Utiliza um LEFT JOIN</code> para garantir que tipos de seguro sem contratos também sejam listados, permitindo identificar lacunas na oferta.</p>
+
+            <h3>Seguradoras e Contratos Ativos (vw_SeguradorasENumeroDeContratosAtivos</code>)</h3>
+            <p>Filtra os contratos pela data de vigência atual (GETDATE() BETWEEN DataInicioVigencia AND DataFimVigencia</code>), contabilizando apenas apólices realmente ativas.</p>
+
+            <h3>Valor Médio do Prémio (vw_ValorMedioDoPremioPorTipoDeSeguro</code>)</h3>
+            <p>Calcula a média (AVG</code>) dos valores contratados na tabela Prémio, agrupados pela descrição do tipo de seguro.</p>
+
+            <h3>Envolvimento de Clientes (vw_ClientesENumeroDeContratosCelebrados</code>)</h3>
+            <p>Utiliza uma expressão CASE</code> para criar uma coluna legível "MaisDeUmContrato" ('Sim'/'Não'), facilitando a identificação visual de clientes com maior fidelização.</p>
+
+            <h3>Pagamentos por Contrato (vw_ContratosESeusPagamentos</code>)</h3>
+            <p>Cruza dados de contratos com pagamentos, usando um LEFT JOIN</code> para garantir que todos os contratos sejam listados, mesmo aqueles que ainda não tenham qualquer pagamento associado.</p>
+
+            <h3>Volume Financeiro por Seguradora (vw_RelatorioValorTotalPremiosPorSeguradora</code>)</h3>
+            <p>Utiliza a função SUM(p.ValorPago)</code> em conjunto com ISNULL</code> para tratar casos sem pagamentos, e aplica a cláusula HAVING</code> para filtrar as seguradoras com um volume financeiro superior a um limite (definido como 1000 no script).</p>
+
+            <h3>Exposição ao Risco (vw_ContratosEExistenciaDeSinistros</code>)</h3>
+            <p>Utiliza TOP 10</code> ordenado de forma decrescente pela contagem de sinistros, destacando as apólices com maior exposição ao risco.</p>
+        </section>
+
+        <section id="relatorio-proposto">
+            <h2>Relatório Proposto</h2>
+            <p>O relatório proposto consiste na criação de uma view</code> que permite visualizar o histórico das apólices. Para a gestão financeira, é fundamental monitorizar o ritmo e as mudanças de estado de cada apólice, pois este relatório permite identificar tendências, cancelamentos e picos de venda, essenciais para o planeamento dos objetivos comerciais.</p>
+            <p>A implementação técnica deste relatório baseou-se na tabela HistoricoApolice</code>. Criou-se uma view genérica com os dados desta tabela e, através de agrupamentos e ordenações, é possível obter dados para fins de auditoria e análise da produtividade do negócio (por exemplo, identificar meses com maior número de cancelamentos de apólices, tipos de seguro ou seguradoras com mais cancelamentos, ou períodos de maior celebração de apólices).</p>
+        </section>
+
+        <section id="funcionalidade-proposta">
+            <h2>Funcionalidade Proposta</h2>
+            <p>A funcionalidade proposta e implementada expande o sistema para suportar uma rede de mediadores. O sistema deixa de ser mono-utilizador, passando a permitir que vários mediadores (agentes) registem apólices sob a mesma infraestrutura, possibilitando analisar a performance individual de cada um. Para implementar esta funcionalidade, foram seguidas as seguintes regras de negócio:</p>
+            <ul>
+                <li>Cada apólice deve estar obrigatoriamente associada a um mediador responsável, através de uma chave estrangeira.</li>
+                <li>Um mediador pode trabalhar com múltiplas seguradoras, mas a relação deve estar ativa na tabela MediadorSeguradora</code> para que a apólice possa ser emitida.</li>
+                <li>Os relatórios devem permitir filtrar a produção (vendas) por mediador específico.</li>
+            </ul>
+            <p>Com esta nova funcionalidade, a empresa beneficia de uma maior escalabilidade, podendo contratar novos agentes sem alterar a estrutura de dados. Permite também um maior controlo de desempenho, possibilitando a criação de rankings de vendas por mediador. Por fim, reforça a segurança, pois cada apólice tem um “dono” registado, facilitando a atribuição de responsabilidades.</p>
+        </section>
+
+    </div>
+
+</body>
+</html>
