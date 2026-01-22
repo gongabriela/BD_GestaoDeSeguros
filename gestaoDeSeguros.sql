@@ -1,19 +1,21 @@
--- Uso do banco de dados master para criar o novo banco de dados
+-- Criação do banco de dados
+-- Cria o banco 'GestaoDeSeguros' se não existir.
 USE [master]
 GO
 
--- Verifica se o banco de dados já existe e o cria se não existir
+-- Cria o banco GestaoDeSeguros caso não exista
 IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'GestaoDeSeguros')
 BEGIN
     CREATE DATABASE [GestaoDeSeguros]
 END
 GO
 
--- Seleciona o banco de dados GestaoDeSeguros para uso
+-- Seleciona o banco GestaoDeSeguros para uso
 USE [GestaoDeSeguros]
 GO
 
--- Limpeza de tabelas existentes para evitar conflitos
+-- Limpeza de objetos existentes
+-- Remove tabelas, views e objetos dependentes para recriação limpa.
 DROP TABLE IF EXISTS [HistoricoSinistro];
 DROP TABLE IF EXISTS [Sinistro];
 DROP TABLE IF EXISTS [Pagamento];
@@ -42,9 +44,10 @@ DROP VIEW IF EXISTS vw_RelatorioPagamentosPorContrato;
 DROP VIEW IF EXISTS vw_HistoricoApolice;
 GO
 
--- Remoção de regras e tipos de dados personalizados existentes
-
--- Desvincylar e apagar a regra e o tipo de dado personalizado, se existirem
+-- Regras e tipos de dados personalizados
+-- Remove e (re)cria objetos que padronizam valores monetários no esquema.
+-- `RL_ValoresMonetarios`: regra que garante valores monetários não-negativos.
+-- `Dom_Moeda`: tipo decimal com precisão (10,2) utilizado para valores monetários.
 IF TYPE_ID('Dom_Moeda') IS NOT NULL
 BEGIN
     EXEC sp_unbindrule 'Dom_Moeda';
@@ -56,34 +59,31 @@ IF TYPE_ID('Dom_Moeda') IS NOT NULL
     DROP TYPE Dom_Moeda;
 GO
 
--- Regras e tipos de dados personalizados
-
--- Regra para valores monetários positivos
 CREATE RULE RL_ValoresMonetarios AS @val >= 0;
 GO
 
--- Tipo de dado personalizado para moeda
 CREATE TYPE Dom_Moeda FROM DECIMAL(10,2) NOT NULL;
 GO
 
--- Associação da regra ao tipo de dado personalizado
 EXEC sp_bindrule 'RL_ValoresMonetarios', 'Dom_Moeda';
 GO
 
 
 /*
 EntidadePessoa
+Regista pessoas físicas e jurídicas que podem atuar como clientes, tomadores ou segurados.
+Campos:
 - EntidadePessoaID (PK) - SMALLINT AUTO_INCREMENT
 - Nome - VARCHAR(100) NOT NULL
 - NIF - CHAR(9) NOT NULL UNIQUE
-- TipoEntidade - eNum('Pessoa Física', 'Pessoa Jurídica') NOT NULL
+- TipoEntidade - VARCHAR(20) NOT NULL ('Pessoa Física', 'Pessoa Jurídica')
 - DataNascimento - DATE NOT NULL
 - Morada - VARCHAR(200) NOT NULL
 - Localidade - VARCHAR(100) NOT NULL
 - Telefone - CHAR(15) NOT NULL
 - Email - VARCHAR(100) NOT NULL
-- Status - eNum('Ativo', 'Inativo') NOT NULL
-- Observações - VARCHAR(200)
+- Status - VARCHAR(10) NOT NULL ('Ativo', 'Inativo')
+- Observacoes - VARCHAR(200)
 */
 CREATE TABLE EntidadePessoa (
     EntidadePessoaID SMALLINT PRIMARY KEY IDENTITY(1,1),
@@ -101,13 +101,15 @@ CREATE TABLE EntidadePessoa (
 
 /*
 EntidadeBem
+Regista bens pertencentes a pessoas físicas ou jurídicas.
+Campos:
 - EntidadeBemID (PK) - INT AUTO_INCREMENT
-- EntidadeID (FK) - SMALLINT NOT NULL (Proprietário do bem)
+- ProprietarioID (FK) - SMALLINT NOT NULL (referência a `EntidadePessoa`)
 - DescricaoBem - VARCHAR(200) NOT NULL
 - IdentificacaoBem - VARCHAR(100) NOT NULL UNIQUE
-- ValorEstimado - DECIMAL(10,2) NOT NULL
+- ValorEstimado - Dom_Moeda (estimativa do valor do bem)
 - DataAquisicao - DATE NOT NULL
-- Observações - VARCHAR(200)
+- Observacoes - VARCHAR(200)
 */
 CREATE TABLE EntidadeBem (
     EntidadeBemID INT PRIMARY KEY IDENTITY(1,1),
@@ -120,16 +122,18 @@ CREATE TABLE EntidadeBem (
 );
 
 /*
-- Seguradora
- - SeguradoraID (PK) - SMALLINT AUTO_INCREMENT
- - Nome - VARCHAR(100) NOT NULL
- - NIF - CHAR(9) NOT NULL UNIQUE
- - Morada - VARCHAR(200) NOT NULL
- - Localidade - VARCHAR(100) NOT NULL
- - Email - VARCHAR(100) NOT NULL
- - Telefone - CHAR(15) NOT NULL
- - Status - eNum('Ativa', 'Inativa') NOT NULL
- - Observações - VARCHAR(200)
+Seguradora
+Regista as empresas seguradoras presentes no sistema.
+Campos:
+- SeguradoraID (PK) - SMALLINT AUTO_INCREMENT
+- Nome - VARCHAR(100) NOT NULL
+- NIF - CHAR(9) NOT NULL UNIQUE
+- Morada - VARCHAR(200) NOT NULL
+- Localidade - VARCHAR(100) NOT NULL
+- Email - VARCHAR(100) NOT NULL
+- Telefone - CHAR(15) NOT NULL
+- Status - VARCHAR(10) NOT NULL ('Ativa', 'Inativa')
+- Observacoes - VARCHAR(200)
 */
 CREATE TABLE Seguradora (
     SeguradoraID SMALLINT PRIMARY KEY IDENTITY(1,1),
@@ -144,16 +148,18 @@ CREATE TABLE Seguradora (
 );
 
 /*
-- Mediador
- - MediadorID (PK) - SMALLINT AUTO_INCREMENT
- - Nome - VARCHAR(100) NOT NULL
- - NIF - CHAR(9) NOT NULL UNIQUE
- - Morada - VARCHAR(200) NOT NULL
- - Localidade - VARCHAR(100) NOT NULL
- - Email - VARCHAR(100) NOT NULL
- - Telefone - CHAR(15) NOT NULL
- - Status - eNum('Ativo', 'Inativo') NOT NULL
- - Observações - VARCHAR(200)
+Mediador
+Regista mediadores de seguros (pessoas ou empresas que intermediam apólices).
+Campos:
+- MediadorID (PK) - SMALLINT AUTO_INCREMENT
+- Nome - VARCHAR(100) NOT NULL
+- NIF - CHAR(9) NOT NULL UNIQUE
+- Morada - VARCHAR(200) NOT NULL
+- Localidade - VARCHAR(100) NOT NULL
+- Email - VARCHAR(100) NOT NULL
+- Telefone - CHAR(15) NOT NULL
+- Status - VARCHAR(10) NOT NULL ('Ativo', 'Inativo')
+- Observacoes - VARCHAR(200)
 */
 CREATE TABLE Mediador (
     MediadorID SMALLINT PRIMARY KEY IDENTITY(1,1),
@@ -168,13 +174,15 @@ CREATE TABLE Mediador (
 );
 
 /*
- MediadorSeguradora
- - MediadorID (PK)(FK) - SMALLINT NOT NULL
- - SeguradoraID (PK)(FK) - SMALLINT NOT NULL
- - DataInicio - DATE NOT NULL
- - DataFim - DATE
- - Status - eNum('Ativo', 'Inativo') NOT NULL
- - Observações - VARCHAR(200)
+Associação entre mediadores e seguradoras, com vigência e status.
+Campos:
+- MediadorID (PK)(FK) - SMALLINT NOT NULL (referência a `Mediador`)
+- SeguradoraID (PK)(FK) - SMALLINT NOT NULL (referência a `Seguradora`)
+- DataInicio - DATE NOT NULL
+- DataFim - DATE
+- Status - VARCHAR(10) NOT NULL ('Ativo', 'Inativo')
+- Observacoes - VARCHAR(200)
+Chave primária composta: (MediadorID, SeguradoraID)
 */
 CREATE TABLE MediadorSeguradora (
     MediadorID SMALLINT NOT NULL REFERENCES Mediador(MediadorID),
@@ -188,9 +196,11 @@ CREATE TABLE MediadorSeguradora (
 
 /*
 TipoDeSeguro
- - TipoSeguroID (PK) - SMALLINT AUTO_INCREMENT
- - Descrição - VARCHAR(100) NOT NULL
- - Observações - VARCHAR(200)
+Tipos de seguro disponíveis.
+Campos:
+- TipoSeguroID (PK) - SMALLINT AUTO_INCREMENT
+- Descricao - VARCHAR(100) NOT NULL
+- Observacoes - VARCHAR(200)
 */
 CREATE TABLE TipoDeSeguro (
     TipoSeguroID SMALLINT PRIMARY KEY IDENTITY(1,1),
@@ -199,13 +209,15 @@ CREATE TABLE TipoDeSeguro (
 );
 
 /*
-- Produto
- - ProdutoID (PK) - SMALLINT AUTO_INCREMENT
- - SeguradoraID (FK) - SMALLINT NOT NULL
- - TipoSeguroID (FK) - SMALLINT NOT NULL
- - NomeProduto - VARCHAR(100) NOT NULL
- - Status - eNum('Ativo', 'Descontinuado') NOT NULL
- - Observações - VARCHAR(200)
+Produto
+Produtos de seguro oferecidos por seguradoras (ligados a um tipo de seguro).
+Campos:
+- ProdutoID (PK) - SMALLINT AUTO_INCREMENT
+- SeguradoraID (FK) - SMALLINT NOT NULL
+- TipoSeguroID (FK) - SMALLINT NOT NULL
+- NomeProduto - VARCHAR(100) NOT NULL
+- Status - VARCHAR(15) NOT NULL ('Ativo', 'Descontinuado')
+- Observacoes - VARCHAR(200)
 */
 CREATE TABLE Produto (
     ProdutoID SMALLINT PRIMARY KEY IDENTITY(1,1),
@@ -218,12 +230,14 @@ CREATE TABLE Produto (
 
 /*
 ProdutoPlano
+Planos específicos de um produto de seguro (coberturas e vigência).
+Campos:
 - ProdutoPlanoID (PK) - INT AUTO_INCREMENT
 - ProdutoID (FK) - SMALLINT NOT NULL
 - NomePlano - VARCHAR(100) NOT NULL
 - DataInicioVigencia - DATE NOT NULL
 - DataFimVigencia - DATE
-- Observações - VARCHAR(200)
+- Observacoes - VARCHAR(200)
 */
 CREATE TABLE ProdutoPlano (
     ProdutoPlanoID INT PRIMARY KEY IDENTITY(1,1),
@@ -236,12 +250,14 @@ CREATE TABLE ProdutoPlano (
 
 /*
 CoberturaPlano
+Define coberturas específicas disponíveis em um plano de produto.
+Campos:
 - CoberturaPlanoID (PK) - INT AUTO_INCREMENT
-- ProdutoPlanoID (FK) - INT NOT NULL
+- ProdutoPlanoID (FK) - INT NOT NULL (referência a `ProdutoPlano`)
 - DescricaoCobertura - VARCHAR(200) NOT NULL
-- LimiteCobertura - DECIMAL(10,2) NOT NULL
-- Franquia - DECIMAL(10,2) NOT NULL
-- Observações - VARCHAR(200)
+- LimiteCobertura - Dom_Moeda
+- Franquia - Dom_Moeda
+- Observacoes - VARCHAR(200)
 */
 CREATE TABLE CoberturaPlano (
     CoberturaPlanoID INT PRIMARY KEY IDENTITY(1,1),
@@ -254,6 +270,8 @@ CREATE TABLE CoberturaPlano (
 
 /*
 CoberturaProdutoPlano
+Associação entre coberturas e planos, indicando quais coberturas pertencem a cada plano.
+Campos:
 - CoberturaProdutoPlanoID (PK) - INT AUTO_INCREMENT
 - ProdutoPlanoID (FK) - INT NOT NULL
 - CoberturaPlanoID (FK) - INT NOT NULL
@@ -265,10 +283,12 @@ CREATE TABLE CoberturaProdutoPlano (
 );
 
 /*
-Apólice
+Apolice
+Regista apólices emitidas para planos de produto.
+Campos:
 - ApoliceID (PK) - INT AUTO_INCREMENT
-- ProdutoPlanoID (FK) - INT NOT NULL
-- MediadorID (FK) - SMALLINT NOT NULL
+- ProdutoPlanoID (FK) - INT NOT NULL (referência a `ProdutoPlano`)
+- MediadorID (FK) - SMALLINT NOT NULL (referência a `Mediador`)
 - DataEmissao - DATE NOT NULL
 - DataInicioVigencia - DATE NOT NULL
 - DataFimVigencia - DATE NOT NULL
@@ -284,10 +304,12 @@ CREATE TABLE Apolice (
 
 /*
 ApoliceEntidadePessoa
+Associação entre apólices e pessoas (tomador, segurado, beneficiário).
+Campos:
 - ApoliceEntidadeID (PK) - INT AUTO_INCREMENT
-- ApoliceID (FK) - INT NOT NULL
-- EntidadePessoaID (FK) - SMALLINT NOT NULL
-- Papel - eNum('Tomador', 'Segurado', 'Beneficiário') NOT NULL
+- ApoliceID (FK) - INT NOT NULL (referência a `Apolice`)
+- EntidadePessoaID (FK) - SMALLINT NOT NULL (referência a `EntidadePessoa`)
+- Papel - VARCHAR(15) NOT NULL ('Tomador', 'Segurado', 'Beneficiário')
 */
 CREATE TABLE ApoliceEntidadePessoa (
     ApoliceEntidadeID INT PRIMARY KEY IDENTITY(1,1),
@@ -298,9 +320,11 @@ CREATE TABLE ApoliceEntidadePessoa (
 
 /*
 ApoliceEntidadeBem
+Associação entre apólices e bens segurados.
+Campos:
 - ApoliceEntidadeBemID (PK) - INT AUTO_INCREMENT
-- ApoliceID (FK) - INT NOT NULL
-- EntidadeBemID (FK) - INT NOT NULL
+- ApoliceID (FK) - INT NOT NULL (referência a `Apolice`)
+- EntidadeBemID (FK) - INT NOT NULL (referência a `EntidadeBem`)
 */
 CREATE TABLE ApoliceEntidadeBem (
     ApoliceEntidadeBemID INT PRIMARY KEY IDENTITY(1,1),
@@ -309,11 +333,13 @@ CREATE TABLE ApoliceEntidadeBem (
 );
 
 /*
-HistóricoApolice
+HistoricoApolice
+Regista alterações de estado e eventos relevantes de uma apólice ao longo do tempo.
+Campos:
 - HistoricoApoliceID (PK) - INT AUTO_INCREMENT
-- ApoliceID (FK) - INT NOT NULL
-- DataAlteracao - DATETIME NOT NULL
-- Estado - eNum('Ativa', 'Suspensa', 'Cancelada', 'Expirada') NOT NULL
+- ApoliceID (FK) - INT NOT NULL (referência a `Apolice`)
+- DataAlteracao - DATETIME NOT NULL (data/hora da alteração; default = data atual)
+- Estado - VARCHAR(15) NOT NULL ('Ativa', 'Suspensa', 'Cancelada', 'Expirada')
 - DescricaoAlteracao - VARCHAR(200) NOT NULL
 */
 CREATE TABLE HistoricoApolice (
@@ -326,12 +352,14 @@ CREATE TABLE HistoricoApolice (
 
 /*
 Premio
+Valores contratados (prémios) correspondentes a apólices.
+Campos:
 - PremioID (PK) - INT AUTO_INCREMENT
-- ApoliceID (FK) - INT NOT NULL UNI
-- ValorContratado - DECIMAL(10,2) NOT NULL
-- Periodicidade - eNum('Mensal', 'Trimestral', 'Semestral', 'Anual') NOT NULL
+- ApoliceID (FK) - INT NOT NULL UNIQUE (cada apólice tem, por exemplo, um prémio padrão)
+- ValorContratado - Dom_Moeda
+- Periodicidade - VARCHAR(15) NOT NULL ('Mensal', 'Trimestral', 'Semestral', 'Anual')
 - DataVencimento - DATE NOT NULL
-- Observações - VARCHAR(200)
+- Observacoes - VARCHAR(200)
 */
 CREATE TABLE Premio (
     PremioID INT PRIMARY KEY IDENTITY(1,1),
@@ -344,11 +372,13 @@ CREATE TABLE Premio (
 
 /*
 Pagamento
+Regista pagamentos efetuados relativos a prêmios.
+Campos:
 - PagamentoID (PK) - INT AUTO_INCREMENT
-- PremioID (FK) - INT NOT NULL
+- PremioID (FK) - INT NOT NULL (referência a `Premio`)
 - DataPagamento - DATE NOT NULL
-- ValorPago - DECIMAL(10,2) NOT NULL
-- MetodoPagamento - eNum('Multibanco', 'Cartão de Crédito', 'Débito Direto', 'Dinheiro')
+- ValorPago - Dom_Moeda
+- MetodoPagamento - VARCHAR(20) NOT NULL ('Multibanco', 'Cartão de Crédito', 'Débito Direto', 'Dinheiro')
 */
 CREATE TABLE Pagamento (
     PagamentoID INT PRIMARY KEY IDENTITY(1,1),
@@ -360,15 +390,16 @@ CREATE TABLE Pagamento (
 
 /*
 Sinistro
+Regista sinistros (ocorrências) associados a apólices.
+Campos:
 - SinistroID (PK) - INT AUTO_INCREMENT
-- ApoliceID (FK) - INT NOT NULL
+- ApoliceID (FK) - INT NOT NULL (referência a `Apolice`)
 - DataOcorrencia - DATE NOT NULL
 - DataParticipacao - DATE NOT NULL
 - Descricao - VARCHAR(200) NOT NULL
-- ValorReclamado - DECIMAL(10,2) NOT NULL
-- ValorIndenizacaoTotal - DECIMAL(10,2)
-- Status - eNum('Aberto', 'Em Análise', 'Fechado', 'Indenizado') NOT NULL
-- Observações - VARCHAR(200)
+- ValorReclamado - Dom_Moeda
+- ValorIndenizacaoTotal - Dom_Moeda
+- Observacoes - VARCHAR(200)
 */
 CREATE TABLE Sinistro (
     SinistroID INT PRIMARY KEY IDENTITY(1,1),
@@ -383,11 +414,13 @@ CREATE TABLE Sinistro (
 
 /*
 HistoricoSinistro
+Regista etapas e alterações no tratamento de um sinistro ao longo do tempo.
+Campos:
 - HistoricoSinistroID (PK) - INT AUTO_INCREMENT
-- SinistroID (FK) - INT NOT NULL
-- DataAlteracao - DATETIME NOT NULL
-- Estado - eNum('Aberto', 'Em Análise', 'Fechado') NOT NULL
-- ValorIndemnizadoNestaFase - DECIMAL(10,2)
+- SinistroID (FK) - INT NOT NULL (referência a `Sinistro`)
+- DataAlteracao - DATETIME NOT NULL (data/hora da alteração; default = data atual)
+- Estado - VARCHAR(15) NOT NULL ('Aberto', 'Em Análise', 'Fechado')
+- ValorIndemnizadoNestaFase - Dom_Moeda
 - DescricaoAlteracao - VARCHAR(200) NOT NULL
 */
 CREATE TABLE HistoricoSinistro (

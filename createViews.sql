@@ -2,11 +2,9 @@ USE [GestaoDeSeguros]
 GO
 
 -- CONTRATOS POR TIPO DE SEGURO
--- listar todos os tipos de seguro existentes;
--- apresentar o número de contratos associados a cada tipo;
--- incluir tambem os tipos de seguro que nao possuem contratos associados
--- permitir identificar tipos de seguro mais e menos representativos (ordenação)
-
+-- Lista todos os tipos e número de contratos por tipo.
+-- Inclui tipos que não possuem contratos registados.
+-- Útil para identificar os tipos mais e menos representativos.
 GO
 CREATE VIEW vw_ContratosPorTipoDeSeguro
 AS
@@ -18,12 +16,9 @@ AS
     GROUP BY t.TipoSeguroID, t.Descricao
 GO
 
--- SEGURADORAS E NUMERO DE CONTRATOS ATIVOS
--- listar todas as seguradoras
--- apresentar o numero de contratos ativos associados a cada seguradora
--- incluir seguradoras sem contratos ativos
--- ordenar os resultados por numero de contratos de forma decrescente
-
+-- SEGURADORAS E NÚMERO DE CONTRATOS ATIVOS
+-- Lista todas as seguradoras com o número de contratos ativos associado a cada uma.
+-- Inclui seguradoras que não têm contratos ativos registados.
 GO
 CREATE VIEW vw_SeguradorasENumeroDeContratosAtivos
 AS
@@ -36,11 +31,9 @@ AS
     GROUP BY s.SeguradoraID, s.Nome
 GO
 
--- VALOR MEDIO DO PREMIO POR TIPO DE SEGURO
--- relacionar contratos e tipos de seguro
--- calcular o valor medio do premio por tipo de seguro
--- considerar apenas contratos ativos
-
+-- VALOR MÉDIO DO PRÊMIO POR TIPO DE SEGURO
+-- Calcula o valor médio do prémio por tipo de seguro.
+-- Considera apenas prémios de apólices cuja vigência cobre a data atual.
 GO
 CREATE VIEW vw_ValorMedioDoPremioPorTipoDeSeguro
 AS
@@ -54,12 +47,10 @@ AS
     GROUP BY ts.TipoSeguroID, ts.Descricao
 GO
 
--- CLIENTES E NUMERO DE CONTRATOS CELEBRADOS
--- listar todas as entidades que assumem o papel de cliente
--- apresentar o numero de contratos associados a cada cliente
--- incluir clientes sem contratos
--- identificar clientes com mais do que um contrato
-
+-- CLIENTES E NÚMERO DE CONTRATOS CELEBRADOS
+-- Lista clientes com o número de contratos associados a cada cliente.
+-- Identifica clientes que têm mais de um contrato.
+-- Inclui clientes sem contratos registados no sistema.
 GO
 CREATE VIEW vw_ClientesENumeroDeContratosCelebrados
 AS
@@ -73,11 +64,9 @@ AS
     GROUP BY ep.EntidadePessoaID, ep.Nome
 GO
 
--- CONTRATOS E RESPETIVOS PAGAMENTOS
--- listar todos os contratos
--- indicar o numero de pagamentos registados por contrato
--- incluir contratos que ainda nao tenham qualquer pagamento associado
-
+-- CONTRATOS E RESPECTIVOS PAGAMENTOS
+-- Lista apólices com o número de pagamentos registados por contrato.
+-- Inclui apólices que ainda não têm pagamentos associados.
 GO
 CREATE VIEW vw_RelatorioPagamentosPorContrato
 AS
@@ -100,12 +89,10 @@ AS
     GROUP BY a.ApoliceID, s.Nome, pp.NomePlano, m.Nome, ep.Nome;
 GO
 
--- SEGURADORAS E VALOR TOTAL DE PREMIOS PAGOS
--- relacionar seguradoras, contratos e pagamentos
--- calcular o valor total de premios pagos por seguradora
--- incluir seguradoras sem valores pagos
--- apresentar apenas seguradoras cujo valor total ultrapasse o limite definido pelo aluno
-
+-- SEGURADORAS E VALOR TOTAL DE PRÊMIOS PAGOS
+-- Calcula o valor total de prémios pagos por seguradora.
+-- Inclui seguradoras sem pagamentos (resultado 0).
+-- O filtro `HAVING` limita seguradoras por valor mínimo acumulado (ex.: >= 1000).
 GO
 CREATE VIEW vw_RelatorioValorTotalPremiosPorSeguradora
 AS
@@ -122,12 +109,10 @@ GROUP BY s.Nome
 HAVING ISNULL(SUM(p.ValorPago), 0) >= 1000;
 GO
 
--- CONTRATOS E EXISTENCIA DE SINISTROS
--- listar todos os contratos
--- indicar o numero de sinistros associados a cada contrato
--- incluir contratos sem qualquer sinistro
--- permitir distinguir os 10 contratos com maior exposicao a risco
-
+-- CONTRATOS E EXISTÊNCIA DE SINISTROS
+-- Lista apólices e o número de sinistros associados a cada uma.
+-- Identifica as 10 apólices com maior número de sinistros.
+-- Inclui apólices que não têm sinistros registados.
 GO
 CREATE VIEW vw_ContratosEExistenciaDeSinistros
 AS
@@ -138,7 +123,9 @@ AS
     ORDER BY NumeroDeSinistros DESC;
 GO
 
--- RELATORIO DO ALUNO: Visão genérica do historico das apólices
+-- RELATÓRIO DO ALUNO: HISTÓRICO DE APÓLICES
+-- Visão genérica do histórico de alterações das apólices.
+-- Inclui seguradora, tipo de seguro, plano, data e descrição da alteração.
 GO
 CREATE VIEW vw_HistoricoApolice
 AS
